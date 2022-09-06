@@ -10,3 +10,10 @@ Full project: https://github.com/sigiltenebrae/CommanderDash3
 ![](src/assets/just_decks_screen.png)
 ![](src/assets/just_calc_screen.png)
 ![](src/assets/just_recs_screen.png)
+
+Instructions: 
+-Install Node >= v18.8.0 and Angular >= 14.1.3
+-Download source
+-Run npm install from source root
+-run npm start to start the angular instance
+-navigate to http://localhost:4200
