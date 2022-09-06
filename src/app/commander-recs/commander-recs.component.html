@@ -1,0 +1,108 @@
+<div fxLayout="row wrap" fxFlex="100" fxLayoutAlign="center" style="margin: 20px">
+  <mat-card *ngIf="!loading_recs && !done_recs" fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" [class.mat-elevation-z3]="true">
+
+    <div *ngIf="!deckList || deckList.length == 0" fxLayout="column">
+      <div fxLayout="row">
+        <mat-form-field appearance="outline" fxFlex="100">
+          <mat-label>Archidekt Username</mat-label>
+          <input matInput [type]="'text'" required minlength="1"
+                 name="userid" [(ngModel)]="username">
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-raised-button (click)="getDeckList()" color="primary">Get Decks!</button>
+      </div>
+    </div>
+    <div *ngIf="deckList && deckList.length > 0 && !loading_recs && !done_recs" fxLayout="column">
+      <h4>{{deckList.length}} decks found. Select imports:</h4>
+      <p><mat-checkbox (change)="setAll($event.checked)">Select All</mat-checkbox></p>
+      <p *ngFor="let deck of deckList"><mat-checkbox [(ngModel)]="deck.checked">{{deck.name}}, Last Update: {{deck.updatedAt}}</mat-checkbox>&nbsp;
+        <ngb-rating *ngIf="deck.checked" [(rate)]="deck.play_rating" [max]="5">
+          <ng-template let-fill="fill" let-index="index">
+            <span class="star" [class.filled]="fill === 100">&#9733;</span>
+          </ng-template>
+        </ngb-rating>
+      </p>
+      <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-raised-button (click)="calculateRecs()" color="primary">Get Recs!</button>
+      </div>
+    </div>
+
+  </mat-card>
+  <div *ngIf="loading_recs" style="position: relative; height: 90vh; width: 100vw">
+    <div style="position: absolute; top: 50%;
+  left: 50%;
+  -ms-transform: translateY(-50%) translateX(-50%);
+  transform: translateY(-50%) translateX(-50%);">
+      <mat-card fxFlexFill fxLayout="column" [class.mat-elevation-z3]="true">
+        <div fxLayout="row" fxLayoutAlign="center" class="recommendation-title">
+          <h2>Calculating Recommendations</h2>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center" fxFlexFill><p>Data read from {{deck_count}} decks.</p></div>
+        <div fxLayout="row" fxLayoutAlign="center" fxFlexFill><p>Completed {{user_count}} users of ~{{approx_users}}.</p></div>
+        <div fxLayout="row" fxLayoutAlign="center" fxFlexFill *ngIf="commander_position != commander_total">
+          <h3 style="width: 90%; text-align: center"><h4>Commanders:</h4><ngb-progressbar type="primary" [striped]="true" [animated]="true" style="height: 28px"
+                                                                                          [value]="(commander_position/commander_total) * 100"></ngb-progressbar></h3>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center" fxFlexFill *ngIf="commander_position == commander_total">
+          <h3 style="width: 90%; text-align: center"><h4>Applying Weights: </h4>&nbsp;<ngb-progressbar type="secondary" [striped]="true" [animated]="true" style="height: 28px"
+                                                                                                       [value]="(weight_position/weight_total) * 100"></ngb-progressbar></h3>
+        </div>
+        <!--      <p>Max Search Time: {{secondsToString(maxSearchTime() / 1000)}}</p>-->
+        <p>Elapsed Time: {{secondsToString(calc_clock)}}</p>
+      </mat-card>
+    </div>
+  </div>
+  <div *ngIf="done_recs && recommendations" fxFlexFill fxLayoutAlign="center center" fxLayout="column">
+    <mat-card [class.mat-elevation-z3]="true">
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <h3>Recommendations:</h3>
+      </div>
+      <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutAlign="center" fxLayoutgap="20px">
+        <div *ngFor="let deck of recommendations" fxLayout="column" style="margin: 10px">
+          <div *ngIf="!deck.partner && !deck.image_url_back">
+            <div fxLayout="row">
+              <img src="{{deck.image_url}}" class="mtg-card" alt="{{deck.commander}}">
+            </div>
+          </div>
+          <div *ngIf="deck.partner">
+            <div fxLayout="row">
+              <div class="partner-holder">
+                <div class="partner-left">
+                  <img src="{{deck.image_url}}" class="mtg-card" alt="{{deck.commander}}">
+                </div>
+                <div class="partner-right">
+                  <img src="{{deck.partner_image_url}}" class="mtg-card" alt="{{deck.partner}}">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="deck.image_url_back">
+            <div fxLayout="row">
+              <div class="partner-holder">
+                <div class="partner-left">
+                  <img src="{{deck.image_url_back}}" class="mtg-card" alt="{{deck.commander}}">
+                </div>
+                <div class="partner-right">
+                  <img src="{{deck.image_url}}" class="mtg-card" alt="{{deck.commander}}">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div fxLayout="column" fxLayoutAlign="center">
+            <div fxLayout="row" fxLayoutAlign="center center">
+              <div fxLayout="column">
+                <h3 *ngIf="deck.theme_rec">Theme: {{deck.theme_rec[0].name}}</h3>
+                <h3 *ngIf="deck.subtheme_rec">Subtheme: {{deck.subtheme_rec[0].name}}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div fxLayout="col" fxLayoutAlign="center center">
+        <p>Elapsed Time: {{secondsToString(calc_clock)}}</p>
+      </div>
+    </mat-card>
+  </div>
+
+</div>

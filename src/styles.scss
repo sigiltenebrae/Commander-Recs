@@ -1,0 +1,67 @@
+/* You can add global styles to this file, and also import other style files */
+
+@use '@angular/material' as mat;
+@import '../node_modules/@angular/material/theming';
+@include mat.core();
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+$secondary: #ffc107;
+
+$dark-theme: mat.define-dark-theme((color: (
+  primary: mat.$amber-palette,
+  accent: mat.$brown-palette
+)));
+
+@include mat.all-component-themes($dark-theme);
+
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';
+
+.star { //for ngb-rating
+  font-size: 1.5rem;
+  color: rgba($secondary, 0.4);
+}
+
+.filled { //also for ngb-rating
+  color: $secondary;
+}
+
+.mtg-card {
+  height: 384px;
+  width: 275px;
+  border-radius: 10px;
+  background-color: black;
+}
+
+.partner-holder {
+  height: 432px; //384 + 48
+  width: 307px; //275 + 32
+  position: relative;
+  float: left;
+  overflow: hidden;
+}
+
+.partner-holder .partner-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.partner-holder .partner-left:hover {
+  z-index: 4;
+}
+
+.partner-holder .partner-right {
+  position: absolute;
+  top: 48px;
+  left: 32px;
+  z-index: 3;
+}
+
+.recommendation-title {
+  margin-bottom: 30px;
+  text-decoration: underline;
+}
